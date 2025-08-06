@@ -73,15 +73,11 @@ function detectMimeFromBuffer(buffer) {
   const text = buffer.toString("utf8", 0, Math.min(100, buffer.length));
   if (text.includes("<svg") || text.includes("<?xml")) return "image/svg+xml";
 
+  const sigStr = String.fromCharCode(...signature);
+
   // === VIDEOS ===
-  // MP4: 00 00 00 ?? 66 74 79 70
-  if (
-    signature[4] === 0x66 &&
-    signature[5] === 0x74 &&
-    signature[6] === 0x79 &&
-    signature[7] === 0x70
-  )
-    return "video/mp4";
+  // MP4: look for 'ftyp' anywhere in first 64 bytes
+  if (sigStr.includes("ftyp")) return "video/mp4";
 
   // WebM: 1A 45 DF A3
   if (
@@ -92,7 +88,7 @@ function detectMimeFromBuffer(buffer) {
   )
     return "video/webm";
 
-  // MKV: 1A 45 DF A3 (same as WebM technically, so fallback to MKV if not matching WebM structure)
+  // MKV: same as WebM technically
   if (
     signature[0] === 0x1a &&
     signature[1] === 0x45 &&
@@ -124,17 +120,6 @@ function detectMimeFromBuffer(buffer) {
     signature[9] === 0x74
   )
     return "video/quicktime";
-
-  // === DOCS ===
-  if (
-    signature[0] === 0x25 &&
-    signature[1] === 0x50 &&
-    signature[2] === 0x44 &&
-    signature[3] === 0x46
-  )
-    return "application/pdf";
-
-  return "application/octet-stream"; // fallback
 }
 
 export function bufferToBase64DataUrl(buffer) {
@@ -171,57 +156,5 @@ export function bufferToBase64DataUrl(buffer) {
       console.error("Fallback conversion also failed:", fallbackError);
       return null;
     }
-  }
-}
-
-// Debug version to help troubleshoot
-export function bufferToBase64DataUrlDebug(buffer) {
-  console.log("=== bufferToBase64DataUrl DEBUG ===");
-  console.log("Input buffer:", buffer);
-  console.log("Buffer type:", typeof buffer);
-  console.log("Is Buffer:", Buffer.isBuffer(buffer));
-  console.log("Is Uint8Array:", buffer instanceof Uint8Array);
-  console.log("Buffer length:", buffer?.length);
-
-  if (!buffer) {
-    console.log("Buffer is null/undefined, returning null");
-    return null;
-  }
-
-  // Ensure buffer is a Buffer instance
-  if (!Buffer.isBuffer(buffer)) {
-    if (buffer instanceof Uint8Array) {
-      console.log("Converting Uint8Array to Buffer");
-      buffer = Buffer.from(buffer);
-    } else {
-      console.error("Expected Buffer or Uint8Array, got:", typeof buffer);
-      return null;
-    }
-  }
-
-  try {
-    // Show first few bytes
-    const firstBytes = Array.from(buffer.subarray(0, 8))
-      .map((b) => "0x" + b.toString(16).padStart(2, "0"))
-      .join(" ");
-    console.log("First 8 bytes:", firstBytes);
-
-    // Detect MIME type
-    const mime = detectMimeFromBuffer(buffer);
-    console.log("Detected MIME type:", mime);
-
-    // Convert to base64
-    const base64 = buffer.toString("base64");
-    console.log("Base64 conversion successful, length:", base64.length);
-    console.log("Base64 preview:", base64.substring(0, 50) + "...");
-
-    const dataUrl = `data:${mime};base64,${base64}`;
-    console.log("Final data URL length:", dataUrl.length);
-    console.log("Data URL preview:", dataUrl.substring(0, 100) + "...");
-
-    return dataUrl;
-  } catch (error) {
-    console.error("Error in bufferToBase64DataUrl:", error);
-    return null;
   }
 }

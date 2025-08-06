@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { CloseRounded } from "@mui/icons-material";
+import { CloseRounded, PlayArrowRounded } from "@mui/icons-material";
 import {
   AVATAR_COLORS,
   BLOTTER_CATEGORIES,
@@ -249,12 +249,41 @@ const ReportDetailModal = ({
               <div className="flex flex-wrap gap-4">
                 {imageUrls.evidence.map((src, idx) => (
                   <div key={idx} className="flex flex-col items-center">
-                    <img
-                      src={src}
-                      alt={`Attachment ${idx + 1}`}
-                      className="w-36 h-24 object-cover border rounded cursor-pointer"
-                      onClick={() => setPreviewImage(src)}
-                    />
+                    {(() => {
+                      const mime = src.startsWith("data:")
+                        ? src.split(";")[0].split(":")[1]
+                        : "";
+
+                      const isVideo = mime.startsWith("video/");
+
+                      return isVideo ? (
+                        <div className="relative w-36 h-24">
+                          <video
+                            className="w-full h-full object-cover border rounded cursor-pointer"
+                            onClick={() => setPreviewImage(src)}
+                            muted
+                            playsInline
+                            preload="metadata"
+                          >
+                            <source
+                              src={src + "#t=0.1"}
+                              type={mime || "video/mp4"}
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+
+                          <PlayArrowRounded className="absolute inset-0 m-auto text-white text-3xl drop-shadow-md pointer-events-none" />
+                        </div>
+                      ) : (
+                        <img
+                          src={src}
+                          alt={`Attachment ${idx + 1}`}
+                          className="w-36 h-24 object-cover border rounded cursor-pointer"
+                          onClick={() => setPreviewImage(src)}
+                        />
+                      );
+                    })()}
+
                     <span className="text-xs mt-1">Attachment {idx + 1}</span>
                   </div>
                 ))}
@@ -378,17 +407,21 @@ const ReportDetailModal = ({
             className="fixed inset-0 z-[60] bg-black/70 flex items-center justify-center"
             onClick={() => setPreviewImage(null)}
           >
-            <div
-              className="relative"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl"
-              />
+            <div className="relative" onClick={(e) => e.stopPropagation()}>
+              {previewImage.startsWith("data:video/") ? (
+                <video
+                  src={previewImage}
+                  controls
+                  autoPlay
+                  className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl"
+                />
+              ) : (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className="max-w-[90vw] max-h-[90vh] rounded-xl shadow-2xl"
+                />
+              )}
               <button
                 className="absolute top-2 right-2 aspect-square w-8 flex justify-center items-center cursor-pointer text-white bg-black/60 hover:bg-black/80 rounded-full"
                 onClick={() => setPreviewImage(null)}
