@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { prisma, generateSequentialAdminId } from "@/lib";
+import { prisma } from "@/lib/prisma";
+import { generateSequentialAdminId } from "@/lib";
 import { sendEmail } from "@/lib/server/sendEmail";
 
 export async function POST(req, context) {

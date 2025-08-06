@@ -3,6 +3,7 @@ CREATE TABLE `Barangay` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL DEFAULT 'Barangay 123',
     `logoUrl` VARCHAR(191) NULL,
+    `location` VARCHAR(191) NOT NULL DEFAULT 'Tondo, Manila',
     `address` VARCHAR(191) NOT NULL DEFAULT 'Zone 10, District 1, Manila City',
     `hotline` VARCHAR(191) NOT NULL DEFAULT '(02) 8765 4321',
     `email` VARCHAR(191) NOT NULL DEFAULT 'barangay123@tondo.gov.ph',
@@ -13,17 +14,34 @@ CREATE TABLE `Barangay` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `PendingAdmin` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(191) NOT NULL,
+    `phoneNumber` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NOT NULL,
+    `dashboardRole` ENUM('ADMIN', 'STAFF') NOT NULL,
+    `hierarchyRole` ENUM('CAPTAIN', 'KAGAWAD', 'SK_CHAIR', 'SECRETARY', 'CLERK', 'TANOD') NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    UNIQUE INDEX `PendingAdmin_email_key`(`email`),
+    UNIQUE INDEX `PendingAdmin_phoneNumber_key`(`phoneNumber`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Admin` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NOT NULL,
-    `address` VARCHAR(191) NOT NULL,
+    `phoneNumber` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NOT NULL,
-    `dashboardRole` ENUM('ADMIN', 'STAFF') NOT NULL DEFAULT 'STAFF',
-    `hierarchyRole` ENUM('CAPTAIN', 'KAGAWAD', 'SK_CHAIR', 'SECRETARY', 'CLERK') NOT NULL DEFAULT 'CLERK',
+    `dashboardRole` ENUM('ADMIN', 'STAFF') NOT NULL,
+    `hierarchyRole` ENUM('CAPTAIN', 'KAGAWAD', 'SK_CHAIR', 'SECRETARY', 'CLERK', 'TANOD') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     UNIQUE INDEX `Admin_email_key`(`email`),
+    UNIQUE INDEX `Admin_phoneNumber_key`(`phoneNumber`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -52,12 +70,13 @@ CREATE TABLE `Complaint` (
     `id` VARCHAR(191) NOT NULL,
     `trackingId` VARCHAR(191) NOT NULL,
     `description` TEXT NOT NULL,
-    `category` ENUM('NOISE_COMPLAINT', 'THEFT_OR_BURGLARY', 'TRESPASSING', 'DISTURBANCE_OF_PEACE', 'ASSAULT', 'TRAFFIC_INCIDENT', 'DISORDERLY_CONDUCT', 'PROPERTY_DAMAGE', 'SUSPICIOUS_ACTIVITY', 'DOMESTIC_VIOLENCE') NOT NULL,
+    `category` ENUM('NOISE_COMPLAINT', 'THEFT_OR_BURGLARY', 'TRESPASSING', 'DISTURBANCE_OF_PEACE', 'ASSAULT', 'TRAFFIC_INCIDENT', 'DISORDERLY_CONDUCT', 'PROPERTY_DAMAGE', 'SUSPICIOUS_ACTIVITY', 'DOMESTIC_VIOLENCE', 'ACCIDENT', 'ANIMAL_COMPLAINT', 'DRUG_RELATED', 'FIRE', 'FRAUD', 'HARASSMENT', 'ILLEGAL_STRUCTURE', 'LOST_AND_FOUND', 'MISSING_PERSON', 'VANDALISM', 'PUBLIC_DISTURBANCE', 'VIOLATION_OF_ORDINANCE', 'WEAPONS_OFFENSE', 'OTHER') NOT NULL,
     `incidentDateTime` DATETIME(3) NOT NULL,
     `location` VARCHAR(191) NULL,
     `subjectName` VARCHAR(191) NULL,
     `subjectContext` TEXT NULL,
     `status` ENUM('PENDING', 'IN_PROGRESS', 'ESCALATION_REQUESTED', 'ESCALATED', 'RESOLVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    `severity` INTEGER NULL,
     `remarks` TEXT NULL,
     `complainantId` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -88,7 +107,7 @@ CREATE TABLE `Blotter` (
     `status` ENUM('FILED', 'UNDER_MEDIATION', 'RESOLVED', 'REFERRED') NOT NULL DEFAULT 'FILED',
     `remarks` TEXT NULL,
     `description` TEXT NOT NULL,
-    `category` ENUM('NOISE_COMPLAINT', 'THEFT_OR_BURGLARY', 'TRESPASSING', 'DISTURBANCE_OF_PEACE', 'ASSAULT', 'TRAFFIC_INCIDENT', 'DISORDERLY_CONDUCT', 'PROPERTY_DAMAGE', 'SUSPICIOUS_ACTIVITY', 'DOMESTIC_VIOLENCE') NOT NULL,
+    `category` ENUM('NOISE_COMPLAINT', 'THEFT_OR_BURGLARY', 'TRESPASSING', 'DISTURBANCE_OF_PEACE', 'ASSAULT', 'TRAFFIC_INCIDENT', 'DISORDERLY_CONDUCT', 'PROPERTY_DAMAGE', 'SUSPICIOUS_ACTIVITY', 'DOMESTIC_VIOLENCE', 'ACCIDENT', 'ANIMAL_COMPLAINT', 'DRUG_RELATED', 'FIRE', 'FRAUD', 'HARASSMENT', 'ILLEGAL_STRUCTURE', 'LOST_AND_FOUND', 'MISSING_PERSON', 'VANDALISM', 'PUBLIC_DISTURBANCE', 'VIOLATION_OF_ORDINANCE', 'WEAPONS_OFFENSE', 'OTHER') NOT NULL,
     `incidentDateTime` DATETIME(3) NOT NULL,
     `location` VARCHAR(191) NULL,
     `subjectName` VARCHAR(191) NULL,
@@ -104,7 +123,7 @@ CREATE TABLE `Blotter` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `IncidentAttachment` (
+CREATE TABLE `BlotterAttachment` (
     `id` VARCHAR(191) NOT NULL,
     `file` LONGBLOB NOT NULL,
     `blotterId` VARCHAR(191) NOT NULL,
@@ -113,15 +132,24 @@ CREATE TABLE `IncidentAttachment` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `PendingAdmin` (
+CREATE TABLE `ComplaintEvent` (
     `id` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NOT NULL,
-    `email` VARCHAR(191) NOT NULL,
-    `address` VARCHAR(191) NOT NULL,
-    `password` VARCHAR(191) NOT NULL,
+    `complaintId` VARCHAR(191) NOT NULL,
+    `action` VARCHAR(191) NOT NULL,
+    `adminId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-    UNIQUE INDEX `PendingAdmin_email_key`(`email`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `BlotterEvent` (
+    `id` VARCHAR(191) NOT NULL,
+    `blotterId` VARCHAR(191) NOT NULL,
+    `action` VARCHAR(191) NOT NULL,
+    `adminId` VARCHAR(191) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -144,4 +172,16 @@ ALTER TABLE `Blotter` ADD CONSTRAINT `Blotter_complainantId_fkey` FOREIGN KEY (`
 ALTER TABLE `Blotter` ADD CONSTRAINT `Blotter_updatedByAdminId_fkey` FOREIGN KEY (`updatedByAdminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `IncidentAttachment` ADD CONSTRAINT `IncidentAttachment_blotterId_fkey` FOREIGN KEY (`blotterId`) REFERENCES `Blotter`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `BlotterAttachment` ADD CONSTRAINT `BlotterAttachment_blotterId_fkey` FOREIGN KEY (`blotterId`) REFERENCES `Blotter`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ComplaintEvent` ADD CONSTRAINT `ComplaintEvent_complaintId_fkey` FOREIGN KEY (`complaintId`) REFERENCES `Complaint`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `ComplaintEvent` ADD CONSTRAINT `ComplaintEvent_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `BlotterEvent` ADD CONSTRAINT `BlotterEvent_blotterId_fkey` FOREIGN KEY (`blotterId`) REFERENCES `Blotter`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `BlotterEvent` ADD CONSTRAINT `BlotterEvent_adminId_fkey` FOREIGN KEY (`adminId`) REFERENCES `Admin`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
