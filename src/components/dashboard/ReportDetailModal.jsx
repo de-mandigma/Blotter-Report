@@ -309,7 +309,7 @@ const ReportDetailModal = ({
               {currentStatus === "PENDING" && (
                 <>
                   <PrimaryButton
-                    onClick={() => onAction("REJECT", id)}
+                    onClick={() => onAction("REJECTED", id)}
                     className="!bg-red-400"
                   >
                     Reject

@@ -47,6 +47,10 @@ const DashboardSidebar = ({ role }) => {
           })}
         </ul>
 
+        <Link href="/admin/fake-sms" className="text-blue-600 underline">
+          View Fake SMS Inbox
+        </Link>
+
         {/* OTHER LINKS */}
         <ul className="flex flex-col gap-2 text-sm">
           <span className="text-text/50">Others</span>

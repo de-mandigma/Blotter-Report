@@ -25,12 +25,6 @@ export const ADMIN_NAV_LINKS = [
     icon: <GavelRounded fontSize="small" />,
     requiredRole: "ADMIN",
   },
-  {
-    label: "Users",
-    href: "/admin/users",
-    icon: <GroupRounded fontSize="small" />,
-    requiredRole: "ADMIN",
-  },
 ];
 
 export const ADMIN_OTHER_LINKS = [
