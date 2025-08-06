@@ -1,13 +1,17 @@
 const { Server } = require("socket.io");
+const http = require("http");
 
-const io = new Server(3001, {
+const PORT = process.env.PORT || 3001;
+const server = http.createServer();
+
+const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
   },
 });
 
-console.log("Socket.IO server running on port 3001");
+console.log(`Socket.IO server running on port 3001 ${PORT}`);
 
 io.on("connection", (socket) => {
   console.log("🔥 Client connected:", socket.id);
