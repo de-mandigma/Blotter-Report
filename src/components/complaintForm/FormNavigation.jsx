@@ -1,12 +1,14 @@
 "use client";
 
 import { PrimaryButton, SecondaryButton } from "@/components";
+import { CircularProgress } from "@mui/material";
 
 const FormNavigation = ({
   activeStep,
   setActiveStep,
   onNext,
   isSubmit = false,
+  isSubmitting = false,
 }) => {
   const isLastStep = activeStep === 4;
   const isFirstStep = activeStep === 0;
@@ -43,7 +45,13 @@ const FormNavigation = ({
         onClick={isSubmit ? undefined : handleNext}
         isForm
       >
-        {isLastStep ? "Submit" : "Next"}
+        {isLastStep && isSubmitting ? (
+          <CircularProgress className="!text-background" size={24} />
+        ) : isLastStep ? (
+          "Submit"
+        ) : (
+          "Next"
+        )}
       </PrimaryButton>
     </div>
   );

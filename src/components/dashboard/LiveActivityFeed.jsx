@@ -116,7 +116,7 @@ const LiveActivityFeed = () => {
     socket.on("blotter-created", handleNewBlotter);
     socket.on("blotter-updated", handleStatusUpdate);
     return () => {
-      socket.on("complaint-created", handleNewComplaint);
+      socket.off("complaint-created", handleNewComplaint);
       socket.off("complaint-updated", handleStatusUpdate);
       socket.off("blotter-created", handleNewBlotter);
       socket.off("blotter-updated", handleStatusUpdate);

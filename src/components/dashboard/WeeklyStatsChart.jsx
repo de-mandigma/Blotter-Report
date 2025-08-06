@@ -12,36 +12,76 @@ import {
 } from "recharts";
 import { useEffect, useState } from "react";
 import { CircularProgress } from "@mui/material";
+import { useSocket } from "@/context";
 
 const WeeklyStatsChart = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const fetchWeeklyStats = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch("/api/stats/weekly");
+      if (!res.ok) throw new Error("Failed to fetch weekly stats");
+
+      const responseData = await res.json();
+      console.log("API Response:", responseData);
+
+      const formattedData = responseData.map((item) => ({
+        ...item,
+        date: new Date(item.date).toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        }),
+      }));
+
+      setData(formattedData);
+    } catch (err) {
+      console.error("Failed to load weekly stats", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    fetch("/api/stats/weekly")
-      .then((res) => res.json())
-      .then((responseData) => {
-        console.log("API Response:", responseData); // Debug log
-
-        // Format dates for better display
-        const formattedData = responseData.map((item) => ({
-          ...item,
-          date: new Date(item.date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          }),
-        }));
-
-        setData(formattedData);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load weekly stats", err);
-        setError(err.message);
-        setLoading(false);
-      });
+    fetchWeeklyStats();
   }, []);
+
+  const socket = useSocket();
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewComplaint = () => {
+      console.log("Complaint created - live activity refresh...");
+      fetchWeeklyStats();
+    };
+
+    const handleStatusUpdate = () => {
+      console.log("🔄 Complaint status updated - live activity refresh...");
+      fetchWeeklyStats();
+    };
+
+    const handleNewBlotter = () => {
+      console.log("📄 Blotter created - live activity refresh...");
+      fetchWeeklyStats();
+    };
+
+    socket.on("complaint-created", handleNewComplaint);
+    socket.on("complaint-updated", handleStatusUpdate);
+    socket.on("blotter-created", handleNewBlotter);
+    socket.on("blotter-updated", handleStatusUpdate);
+
+    return () => {
+      socket.off("complaint-created", handleNewComplaint);
+      socket.off("complaint-updated", handleStatusUpdate);
+      socket.off("blotter-created", handleNewBlotter);
+      socket.off("blotter-updated", handleStatusUpdate);
+    };
+  }, [socket]);
 
   if (loading) {
     return (

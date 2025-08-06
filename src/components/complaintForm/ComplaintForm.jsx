@@ -27,6 +27,7 @@ const steps = [
 const ComplaintForm = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -38,6 +39,7 @@ const ComplaintForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     const schema = stepSchemas[activeStep];
     const parsed = schema.safeParse(formData);
@@ -138,6 +140,8 @@ const ComplaintForm = () => {
         message: "Something went wrong. Please try again.",
         severity: "error",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -168,6 +172,7 @@ const ComplaintForm = () => {
           activeStep={activeStep}
           setActiveStep={setActiveStep}
           isSubmit
+          isSubmitting={isSubmitting}
         />
       </form>
 
