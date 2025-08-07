@@ -12,7 +12,7 @@ const ProofOfIncident = ({ formData, setFormData }) => {
     if (!file) return;
 
     if (file.size > MAX_FILE_SIZE) {
-      alert("File exceeds 20MB limit!");
+      alert("File exceeds 4.5MB limit!");
       return;
     }
 
