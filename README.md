@@ -45,6 +45,6 @@ A full-stack web application built with **Next.js**, **React 19**, **Prisma**, *
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/blotter-thesis-app.git
-cd blotter-thesis-app
+git clone https://github.com/de-mandigma/Blotter-Report.git
+cd Blotter-Report
 ```
