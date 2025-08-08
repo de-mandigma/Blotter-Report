@@ -7,7 +7,7 @@ export async function GET() {
 
   const results = await Promise.all(
     [...Array(7)].map(async (_, i) => {
-      const day = subDays(new Date(), 6 - i); // Go backwards from 6 days ago to today
+      const day = subDays(new Date(), 6 - i);
       const start = startOfDay(day);
       const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
 
@@ -45,7 +45,7 @@ export async function GET() {
       ]);
 
       return {
-        date: start.toISOString().split("T")[0], // Just the YYYY-MM-DD part
+        date: start.toISOString().split("T")[0],
         pendingComplaints,
         resolvedCases: resolvedComplaints + resolvedBlotters,
         flaggedReports,

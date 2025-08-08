@@ -31,7 +31,7 @@ export async function generateSequentialAdminId() {
     },
   });
 
-  let nextNumber = 1001; // Start from 1001
+  let nextNumber = 1001;
 
   if (lastAdmin && lastAdmin.id.startsWith("ADM")) {
     const lastNumber = parseInt(lastAdmin.id.substring(3));

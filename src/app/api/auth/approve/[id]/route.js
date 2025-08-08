@@ -27,7 +27,7 @@ export async function POST(req, context) {
         name: pending.name,
         email: pending.email,
         phoneNumber: pending.phoneNumber,
-        password: pending.password, // already hashed
+        password: pending.password,
         dashboardRole: pending.dashboardRole,
         hierarchyRole: pending.hierarchyRole,
       },

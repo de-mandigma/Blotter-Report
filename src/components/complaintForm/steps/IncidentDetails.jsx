@@ -23,7 +23,7 @@ const DateTimeInput = ({ label, value, onChange }) => {
       <DateTimePicker
         maxDateTime={dayjs()}
         label={label}
-        value={value ? dayjs(value) : null} // Convert ISO string to dayjs
+        value={value ? dayjs(value) : null}
         onChange={(newValue) =>
           onChange(newValue ? newValue.toISOString() : "")
         }

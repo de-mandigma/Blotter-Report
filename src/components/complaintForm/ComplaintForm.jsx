@@ -74,7 +74,6 @@ const ComplaintForm = () => {
         }
       }
 
-      // Final step: submit to backend
       if (activeStep === steps.length - 1) {
         const res = await fetch("/api/complaint", {
           method: "POST",

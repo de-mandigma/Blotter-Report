@@ -147,7 +147,7 @@ const BlotterOverview = ({
 
   useEffect(() => {
     if (!isCompact && limit > 0) {
-      fetchBlotters(true, 1, limit); // load page 1
+      fetchBlotters(true, 1, limit);
     } else if (isCompact) {
       fetchBlotters(true);
     }
@@ -205,7 +205,9 @@ const BlotterOverview = ({
       header: "Status",
       render: (value) => (
         <span
-          className={`px-2 py-1 rounded-full text-xs ${STATUS_STYLES[value] || STATUS_STYLES.DEFAULT}`}
+          className={`px-2 py-1 rounded-full text-xs ${
+            STATUS_STYLES[value] || STATUS_STYLES.DEFAULT
+          }`}
         >
           {value
             .replace(/_/g, " ")
@@ -232,8 +234,9 @@ const BlotterOverview = ({
       header: "Complainant",
       render: (_, row) => {
         const c = row.complainant || {};
-        const initials =
-          `${c.firstName?.[0] || ""}${c.lastName?.[0] || ""}`.toUpperCase();
+        const initials = `${c.firstName?.[0] || ""}${
+          c.lastName?.[0] || ""
+        }`.toUpperCase();
         const avatarColor = getDeterministicAvatarColor(c.id, AVATAR_COLORS);
         return (
           <div className="flex items-center space-x-2">
@@ -244,7 +247,9 @@ const BlotterOverview = ({
             </div>
             <div>
               <div className="text-xs font-medium text-text">
-                {`${c.lastName || ""}, ${c.firstName || ""} ${c.middleName || ""}`.trim()}
+                {`${c.lastName || ""}, ${c.firstName || ""} ${
+                  c.middleName || ""
+                }`.trim()}
               </div>
               {c.phoneNumber && (
                 <div className="text-[0.625rem] text-text opacity-50">

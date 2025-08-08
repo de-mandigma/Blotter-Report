@@ -29,7 +29,6 @@ const Stepper = ({ steps, activeStep }) => {
               cy="36"
               r={radius}
               stroke="currentColor"
-              // strokeWidth="4"
               className="text-text/10"
               fill="none"
             />
@@ -38,7 +37,6 @@ const Stepper = ({ steps, activeStep }) => {
               cy="36"
               r={radius}
               stroke="currentColor"
-              // strokeWidth="4"
               className="text-primary"
               strokeDasharray={circumference}
               strokeDashoffset={dashOffset}

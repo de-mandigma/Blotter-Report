@@ -6,7 +6,7 @@ export async function GET() {
     await ensurePrismaConnected;
 
     const pendingAdmins = await prisma.pendingAdmin.findMany({
-      orderBy: { createdAt: "desc" }, // optional, to show most recent first
+      orderBy: { createdAt: "desc" }, optional, to show most recent first
     });
 
     return NextResponse.json({

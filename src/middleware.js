@@ -10,7 +10,7 @@ export async function middleware(request) {
       return NextResponse.redirect(new URL("/", request.url));
     }
 
-    const decoded = await verifyToken(token); // Note: now async
+    const decoded = await verifyToken(token);
 
     if (!decoded) {
       return NextResponse.redirect(new URL("/", request.url));

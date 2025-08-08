@@ -35,11 +35,11 @@ export const SEVERITY_SCORE_TO_LABEL = {
 };
 
 export const SEVERITY_COLOR_MAP = {
-  5: "bg-[#fdf3f3]", // EMERGENCY
-  4: "bg-[#fff8f0]", // URGENT
-  3: "bg-[#fffcf2]", // MODERATE
-  2: "bg-[#f6fdf8]", // MINOR
-  1: "bg-[#fafafa]", // INFORMATIONAL
+  5: "bg-[#fdf3f3]",
+  4: "bg-[#fff8f0]",
+  3: "bg-[#fffcf2]",
+  2: "bg-[#f6fdf8]",
+  1: "bg-[#fafafa]",
 };
 
 export const SEVERITY_HOVER_MAP = {

@@ -18,7 +18,7 @@ import { CloseRounded } from "@mui/icons-material";
 import { useSocket } from "@/context";
 
 const AuthModal = ({ open, onClose }) => {
-  const [mode, setMode] = useState("login"); // "login" or "signup"
+  const [mode, setMode] = useState("login");
   const [loginForm, setLoginForm] = useState(LOGIN_FORM_DATA);
   const [signupForm, setSignupForm] = useState(INITIAL_SIGNUP_DATA);
   const [loading, setLoading] = useState(false);
@@ -260,8 +260,8 @@ const AuthModal = ({ open, onClose }) => {
                 ? "Logging in..."
                 : "Submitting..."
               : mode === "login"
-                ? "Log In"
-                : "Sign Up"}
+              ? "Log In"
+              : "Sign Up"}
           </PrimaryButton>
 
           <span className="text-xs w-full text-center select-none text-text/60 md:text-sm">

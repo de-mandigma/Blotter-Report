@@ -10,7 +10,7 @@ export async function POST(req) {
       phoneNumber,
       password,
       confirmPassword,
-      hierarchyRole, // only this is from user
+      hierarchyRole,
     } = body;
 
     if (
@@ -76,7 +76,7 @@ export async function POST(req) {
         email,
         phoneNumber,
         password: hashedPassword,
-        dashboardRole, // derived!
+        dashboardRole,
         hierarchyRole,
       },
     });
