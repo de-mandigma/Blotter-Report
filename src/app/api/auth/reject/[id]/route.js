@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { ensurePrismaConnected, prisma } from "@/lib";
-import { sendEmail } from "@/lib/server/sendEmail";
 
 export async function DELETE(req, context) {
   const params = await context.params;
@@ -21,16 +20,7 @@ export async function DELETE(req, context) {
     // Delete the pending admin
     await prisma.pendingAdmin.delete({ where: { id } });
 
-    // Send rejection email
-    await sendEmail({
-      to: pending.email,
-      subject: "Admin Request Rejected",
-      html: `<p>Hi ${pending.name},</p>
-             <p>Unfortunately, your admin account request has been rejected by the barangay staff.</p>
-             <p>If you believe this was a mistake, please reach out directly.</p>`,
-    });
-
-    return NextResponse.json({ message: "Admin rejected and notified." });
+    return NextResponse.json({ message: "Admin rejected." });
   } catch (err) {
     console.error("Rejection error:", err);
     return NextResponse.json(

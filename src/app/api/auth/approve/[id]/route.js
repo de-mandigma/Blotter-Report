@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateSequentialAdminId } from "@/lib";
-import { sendEmail } from "@/lib/server/sendEmail";
 
 export async function POST(req, context) {
   const params = await context.params;
@@ -35,18 +34,8 @@ export async function POST(req, context) {
 
     await prisma.pendingAdmin.delete({ where: { id } });
 
-    await sendEmail({
-      to: pending.email,
-      subject: "Your Admin Account Has Been Approved",
-      html: `<p>Hi ${pending.name},</p>
-             <p>Your admin request has been approved! You can now log in using the following credentials:</p>
-             <p><strong>Admin ID:</strong> ${adminId}</p>
-             <p><strong>Password:</strong> (the one you set)</p>
-             <p>Please log in and complete your profile if needed.</p>`,
-    });
-
     return NextResponse.json({
-      message: "Admin approved and notified via email.",
+      message: "Admin approved.",
     });
   } catch (err) {
     console.error("Approval error:", err);
