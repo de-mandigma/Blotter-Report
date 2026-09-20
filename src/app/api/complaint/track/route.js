@@ -6,44 +6,66 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
   try {
-    const { trackingId } = await req.json();
+    const { trackingId: rawTrackingId } = await req.json();
 
-    if (!trackingId) {
+    if (!rawTrackingId) {
       return NextResponse.json(
         { success: false, error: "Missing trackingId" },
         { status: 400 }
       );
     }
 
-    const complaint = await prisma.complaint.findUnique({
+    // Tracking IDs are always displayed with a leading "#" (e.g. the
+    // dashboard's Tracking ID column) — residents often copy that in too.
+    const trackingId = rawTrackingId.trim().replace(/^#/, "");
+
+    const complainantSelect = {
+      id: true,
+      firstName: true,
+      middleName: true,
+      lastName: true,
+      phoneNumber: true,
+      fullAddress: true,
+      residencyProof: true,
+      attachmentIDFront: true,
+      attachmentIDBack: true,
+      attachmentUtility: true,
+    };
+
+    let complaint = await prisma.complaint.findUnique({
       where: { trackingId },
       include: {
-        complainant: {
-          select: {
-            id: true,
-            firstName: true,
-            middleName: true,
-            lastName: true,
-            phoneNumber: true,
-            fullAddress: true,
-            residencyProof: true,
-            attachmentIDFront: true,
-            attachmentIDBack: true,
-            attachmentUtility: true,
-          },
-        },
-        attachments: {
-          select: {
-            id: true,
-            file: true,
+        complainant: { select: complainantSelect },
+        attachments: { select: { id: true, file: true } },
+        blotter: {
+          include: {
+            complainant: { select: complainantSelect },
+            attachments: { select: { id: true, file: true } },
           },
         },
       },
     });
 
+    // A complaint that's been escalated is tracked from then on as its
+    // linked blotter — the resident's original tracking ID still resolves,
+    // but shows the blotter's current status, not the stale complaint one.
+    if (complaint?.blotter) {
+      complaint = complaint.blotter;
+    }
+
+    if (!complaint) {
+      complaint = await prisma.blotter.findUnique({
+        where: { trackingId },
+        include: {
+          complainant: { select: complainantSelect },
+          attachments: { select: { id: true, file: true } },
+        },
+      });
+    }
+
     if (!complaint) {
       return NextResponse.json(
-        { success: false, error: "Complaint not found" },
+        { success: false, error: "Report not found" },
         { status: 404 }
       );
     }
