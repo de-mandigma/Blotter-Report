@@ -105,12 +105,12 @@ const BlotterOverview = ({
   const fetchBlotters = async (
     showLoading = false,
     page = 1,
-    limitVal = 10
+    limitVal = 10,
   ) => {
     if (showLoading) setLoading(true);
     try {
       const res = await fetch(
-        `/api/blotter?include=complainant&page=${page}&limit=${limitVal}`
+        `/api/blotter?include=complainant&page=${page}&limit=${limitVal}`,
       );
       const data = await res.json();
       if (!data.success || !Array.isArray(data.data)) {
@@ -325,7 +325,7 @@ const BlotterOverview = ({
           columns={columns}
           isCompact={isCompact}
           isViewable={isViewable}
-          viewMore={() => router.push("/admin/blotter")}
+          viewMore={() => router.push("/admin/blotters")}
           title="Blotter Overview"
           loading={loading}
         />

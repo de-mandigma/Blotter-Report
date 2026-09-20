@@ -32,9 +32,13 @@ const WeeklyStatsChart = () => {
 
       const formattedData = responseData.map((item) => ({
         ...item,
+        // item.date is a Manila-calendar-day key encoded as UTC midnight;
+        // format in UTC so every viewer sees the same day regardless of
+        // their own browser timezone.
         date: new Date(item.date).toLocaleDateString("en-US", {
           month: "short",
           day: "numeric",
+          timeZone: "UTC",
         }),
       }));
 

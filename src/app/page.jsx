@@ -51,7 +51,11 @@ const HomePage = () => {
               manage previous reports.
             </p>
             <div className="mt-4">
-              <Link href="/fake-sms" className="text-blue-600 underline">
+              <Link
+                href="/fake-sms"
+                prefetch={false}
+                className="text-blue-600 underline"
+              >
                 View Fake SMS Inbox (Demo)
               </Link>
             </div>
