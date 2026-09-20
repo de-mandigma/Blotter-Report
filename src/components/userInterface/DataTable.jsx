@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import { SEVERITY_COLOR_MAP, SEVERITY_HOVER_MAP } from "@/constants";
 import { CircularProgress } from "@mui/material";
+import EmptyState from "./EmptyState";
 
 const DataTable = ({
   data = [],
@@ -124,6 +125,8 @@ const DataTable = ({
           <div className="flex items-center justify-center h-32">
             <CircularProgress />
           </div>
+        ) : displayData.length === 0 ? (
+          <EmptyState />
         ) : (
           <table className="w-full text-sm">
             <thead>

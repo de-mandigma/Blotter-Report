@@ -47,7 +47,11 @@ const DashboardSidebar = ({ role }) => {
           })}
         </ul>
 
-        <Link href="/admin/fake-sms" className="text-blue-600 underline">
+        <Link
+          href="/admin/fake-sms"
+          prefetch={false}
+          className="text-blue-600 underline"
+        >
           View Fake SMS Inbox
         </Link>
 

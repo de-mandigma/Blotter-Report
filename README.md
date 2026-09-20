@@ -20,8 +20,6 @@ A full-stack web application built with **Next.js**, **React 19**, **Prisma**, *
 
 - **Prisma ORM**
 - **Socket.IO** (real-time communication)
-- **Nodemailer** and **Resend** (email)
-- **Twilio** (SMS)
 - **JOSE** (JWT tokens)
 - **bcrypt / bcryptjs** (password hashing)
 

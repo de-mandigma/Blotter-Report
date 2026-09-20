@@ -3,6 +3,7 @@
 import { useSocket } from "@/context";
 import { CircularProgress } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
+import EmptyState from "@/components/userInterface/EmptyState";
 
 const LiveActivityFeed = () => {
   const containerRef = useRef(null);
@@ -10,11 +11,6 @@ const LiveActivityFeed = () => {
   const [limit, setLimit] = useState(3);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [hasMounted, setHasMounted] = useState(false);
-  useEffect(() => {
-    const timeout = setTimeout(() => setHasMounted(true), 100);
-    return () => clearTimeout(timeout);
-  }, []);
 
   const calculateLimit = () => {
     if (containerRef.current) {
@@ -136,27 +132,22 @@ const LiveActivityFeed = () => {
     })}`;
   };
 
-  if (!hasMounted) return null;
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center py-8">
-        <CircularProgress />
-      </div>
-    );
-  }
-
-  if (error) {
-    return <div className="text-red-500 text-sm text-center py-4">{error}</div>;
-  }
-
   return (
     <div ref={containerRef} className="flex flex-col h-full">
       <h3 className="text-sm text-text font-semibold mb-4 flex-shrink-0">
         Live Activity Feed
       </h3>
-      <div className="flex flex-col gap-2 flex-1 min-h-0">
-        {events.map((event) => (
+      {loading ? (
+        <div className="flex justify-center items-center py-8">
+          <CircularProgress />
+        </div>
+      ) : error ? (
+        <div className="text-red-500 text-sm text-center py-4">{error}</div>
+      ) : events.length === 0 ? (
+        <EmptyState title="No recent activity" />
+      ) : (
+        <div className="flex flex-col gap-2 flex-1 min-h-0">
+          {events.map((event) => (
           <div
             key={event.id}
             className="text-sm bg-gray-100 px-4 py-2 rounded-md border border-gray-200 flex flex-col"
@@ -180,8 +171,9 @@ const LiveActivityFeed = () => {
               {formatTimestamp(event.timestamp)}
             </div>
           </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

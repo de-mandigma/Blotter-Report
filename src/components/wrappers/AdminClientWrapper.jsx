@@ -1,30 +1,25 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { UserProvider } from "@/context";
+
+const RESTRICTED_PATHS = ["/admin/users", "/admin/blotters"];
 
 export default function AdminClientWrapper({ user, children }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [authorized, setAuthorized] = useState(false);
+
+  const isRestrictedPath = RESTRICTED_PATHS.some((path) =>
+    pathname?.startsWith(path)
+  );
+  const isForbidden = isRestrictedPath && user?.dashboardRole !== "ADMIN";
 
   useEffect(() => {
-    if (!user) return;
+    if (isForbidden) router.replace("/admin");
+  }, [isForbidden, router]);
 
-    const restrictedPaths = ["/admin/users", "/admin/blotters"];
-    const isRestricted = restrictedPaths.some((path) =>
-      pathname?.startsWith(path)
-    );
-
-    if (isRestricted && user.dashboardRole !== "ADMIN") {
-      router.replace("/admin");
-    } else {
-      setAuthorized(true);
-    }
-  }, [pathname, user, router]);
-
-  if (!authorized) return null;
+  if (isForbidden) return null;
 
   return <UserProvider user={user}>{children}</UserProvider>;
 }

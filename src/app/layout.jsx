@@ -1,4 +1,5 @@
 import "@/app/global.css";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import theme from "@/styles/theme";
@@ -26,14 +27,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <SocketProvider>
-          <FakeSMSProvider>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              {children}
-            </ThemeProvider>
-          </FakeSMSProvider>
-        </SocketProvider>
+        <AppRouterCacheProvider>
+          <SocketProvider>
+            <FakeSMSProvider>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                {children}
+              </ThemeProvider>
+            </FakeSMSProvider>
+          </SocketProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
