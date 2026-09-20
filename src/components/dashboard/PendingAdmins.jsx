@@ -1,14 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import { DataTable } from "@/components";
-import { useRouter } from "next/navigation";
 import { useSocket } from "@/context";
 
-const PendingAdminsTable = ({ isCompact = false, isViewable = true }) => {
+const PendingAdminsTable = ({ isCompact = false }) => {
   const [pendingAdmins, setPendingAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const router = useRouter();
 
   const fetchPendingAdmins = async () => {
     try {
@@ -127,8 +124,7 @@ const PendingAdminsTable = ({ isCompact = false, isViewable = true }) => {
       columns={columns}
       title="Pending Admins"
       isCompact={isCompact}
-      isViewable={isViewable}
-      viewMore={() => router.push("/admin/users")}
+      isViewable={false}
       loading={loading}
     />
   );
