@@ -1,7 +1,6 @@
 import {
   DashboardRounded,
   GavelRounded,
-  ManageAccountsRounded,
   GroupRounded,
   SummarizeRounded,
 } from "@mui/icons-material";
@@ -27,13 +26,7 @@ export const ADMIN_NAV_LINKS = [
   },
 ];
 
-export const ADMIN_OTHER_LINKS = [
-  {
-    label: "Account",
-    href: "/admin/account",
-    icon: <ManageAccountsRounded fontSize="small" />,
-  },
-];
+export const ADMIN_OTHER_LINKS = [];
 
 export const ADMIN_ROLES = {
   CAPTAIN: "Chairperson",
